@@ -217,4 +217,40 @@ var app = {
 	getRSSISuccess : function(data){
 		alert(JSON.stringify(data));
 	},
+    createService : function(){
+        
+		var service = BC.Bluetooth.CreateService("0000ffe0-0000-1000-8000-00805f9b34fb");
+		var property1 = ["notify","write"];
+        var property2 = ["read","write"];
+		var permission = ["read","write"];
+		var onMyWriteRequestName = "myWriteRequest";
+		var onMyReadRequestName = "myReadRequest";
+		var character1 = BC.Bluetooth.CreateCharacteristic("0000ffe1-0000-1000-8000-00805f9b34fb","01","Hex",property1,permission);
+		var character2 = BC.Bluetooth.CreateCharacteristic("0000fff2-0000-1000-8000-00805f9b34fb","00","Hex",property2,permission);
+		var descriptor1 = BC.Bluetooth.CreateDescriptor("00002901-0000-1000-8000-00805f9b34fb","00","Hex",permission);
+		var descriptor2 = BC.Bluetooth.CreateDescriptor("00002902-0000-1000-8000-00805f9b34fb","08","Hex",permission);
+		character1.addDescriptor(descriptor1);
+		character1.addDescriptor(descriptor2);
+		service.addCharacteristic(character1);
+		service.addCharacteristic(character2);
+		BC.Bluetooth.AddService(service,app.addServiceSusscess,app.addServiceError);
+		
+		services[0] = service;
+	},
+	
+	addServiceSusscess : function(){
+		alert("add service success!");
+	},
+    
+	addServiceError : function(){
+		alert("add service error!");
+	},
+	
+	removeServiceSuccess : function(){
+		alert("remove service success!");
+	},
+	
+	removeServiceError : function(){
+		alert("remove service error!");
+	},
 };
