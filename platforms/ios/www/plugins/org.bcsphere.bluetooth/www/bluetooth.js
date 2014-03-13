@@ -89,6 +89,10 @@ var bluetooth = {
     unsubscribe: function(successFunc,errorFunc,deviceID,serviceIndex,characteristicIndex,notifyEventName){
         cordova.exec(successFunc,errorFunc, "BCBluetooth", "setNotification", [{"deviceID":deviceID,"serviceIndex":serviceIndex,"characteristicIndex":characteristicIndex,"enable":"false"}]); 
     },
+	
+	notify: function(successFunc,errorFunc,uniqueID,characteristicIndex,data){
+		cordova.exec(successFunc,errorFunc, "BCBluetooth", "notify" , [{"uniqueID":uniqueID,"characteristicIndex":characteristicIndex,"data":data}]);
+	},
 
 	readDescriptor: function(successFunc,errorFunc,deviceID,serviceIndex,characteristicIndex,descriptorIndex){
     	cordova.exec(successFunc,errorFunc, "BCBluetooth", "readValue", [{"deviceID":deviceID,"serviceIndex":serviceIndex,"characteristicIndex":characteristicIndex,"descriptorIndex":descriptorIndex}]);

@@ -31,6 +31,7 @@ var app = {
 		document.addEventListener('devicedisconnected', app.onBluetoothDisconnect, false);
 		document.addEventListener('newdevice', app.addNewDevice, false);
 		document.addEventListener('bluetoothstatechange', app.onBluetoothStateChange, false);
+        
     },
 
 	onDeviceConnected : function(arg){
@@ -158,9 +159,13 @@ var app = {
 		$("#disconnect").show();
 		$("#connect").hide();
 		
-        app.device.prepare(app.operateCharViewInit);
+        app.device.prepare(app.pushDeviceID);
 	},
-	
+    pushDeviceID: function(){
+        alert("pushDeviceID");
+        var character = app.device.services[0].characteristics[0];
+        character.write("Hex","01",[],[]);
+    },
 	disconnectDevice: function(){
 		app.device.disconnect(app.disconnectSuccess);
 	},
@@ -173,7 +178,7 @@ var app = {
 		
 	operateCharViewInit: function(arg){
         app.hideLoader();
-		var serviceIndex = 1;//Defining the corresponding service according to the hardware
+		var serviceIndex = 0;//Defining the corresponding service according to the hardware
 		var characterIndex =0;
 		var service = app.device.services[serviceIndex];
 		var character = service.characteristics[characterIndex];
@@ -220,8 +225,8 @@ var app = {
     createService : function(){
         
 		var service = BC.Bluetooth.CreateService("0000ffe0-0000-1000-8000-00805f9b34fb");
-		var property1 = ["notify","write"];
-        var property2 = ["read","write"];
+		var property1 = ["write"];
+        var property2 = ["write"];
 		var permission = ["read","write"];
 		var onMyWriteRequestName = "myWriteRequest";
 		var onMyReadRequestName = "myReadRequest";
