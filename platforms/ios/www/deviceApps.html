@@ -1,60 +1,79 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
-		
-		<title></title>
-		<link rel="stylesheet" href="css/jquery.mobile.min.css" />
-		<script src="js/jquery-1.7.1.min.js"></script>
-		<script src="js/jquery.mobile.min.js"></script>
-		<script src="cordova.js"></script>
-		<script src="js/index.js"></script>
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" href="css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/bcstyle.css"/>
+
+
+
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="cordova.js"></script>
+	<script type="text/javascript" charset="utf-8" src="underscore.js"></script>
+	<script src="bc.js"></script>
+	<script src="js/index.js"></script>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<style>  
+		div.ui-slider-switch { width: 7em }  
+	</style> 
 	</head>
+
 	<body>
+
+		<div class="header"> 
+			<img id="back" src="img/back.png" class="img-responsive" onclick="app.goBackToSearch();">
+			<h1><div id="deviceName">bcsocket</div></h1>
+		</div>
 		
-		<div data-role='content'>
-                <h1>bcscoket</h1>
-                <a id="back" href="javascript:window.history.go(-1);" data-role="button">Back</a>
-				<a id="home" href="index.html" data-role="button">Home</a>
-				<a id="connect" href="javascript:void(0)" data-role="button" style=" clear:both;">connect</a>  
-				<a id="disconnect" href="javascript:void(0)" data-role="button" style="display:none; clear:both;">disconnect</a>
-			<div id="user_cont">
-			<h2>Characteristic Operations</h2>
-				<h1><div id="operate_char_deviceName"></div></h1>	
+		<div class="container" id="deviceInfo">
+			<div style="height:80px;"></div>
+			<div><h3>Bcsocket to be connected</h3></div>
+			<div class="configInfo">
+				<ul>
+					<li><h4>service uuid:</h4> <span id='serviceUUID'></span></li>
+					<li><h4>characteristic uuid:</h4><span id='characteristicUUID'></span></li>
+				</ul>
+			</div>
+			<div id="config" class="toModify"><img src="img/prev.png" class="img-responsive"></div>
+
+			<div class="line"></div>
+
+			<div class="deviceInfo_center">
+				<h3>Gatt services found</h3>
+				<img id="connect" src="img/refresh.png" class="img-responsive">
+			</div>
 				
-				<b>Notify Value(Hex): </b><div id="notifyValue_hex"></div></br>
-				<b>Notify Value(ASCII): </b><div id="notifyValue_ascii" ></div></br>
-				<b>Notify Value(Unicode): </b><div id="notifyValue_unicode"></div></br>
-				<b>Notify Date: </b><div id="notifyDate"></div>
-			 	<div id="aaa">
-			 		<a id="subscribe" href="javascript:void(0)" data-role="button" style="margin-left:20px; width:130px;font-size:16px;float:left; ">Subscribe</a>
-			 		<a id="unsubscribe" href="javascript:void(0)" data-role="button" style="margin-left:20px; width:200px;font-size:16px;float:left;">Unsubscribe</a>
-				</div>
+			<div id="user_cont">
+                 <ul id="service_view">
+                    
+                 </ul>
+            </div>
+
+			<div style="display:none;">
+				<ul  id="list_model">
+	                <li id="service_tpl" style="display:none;">
+	                	<ul>
+		                    <li><h4><span dbField='name'></span></h4></li>
+		                    <li><h4>ServiceIndex:<span dbField='index'></span><h4></li>
+		                    <li><h4>ServiceUUID:<span dbField='uuid'></span><h4></li>
+	                    </ul>
+	                </li>
+	            </ul>
+			</div>
+			<div class="deviceInfo_bottom">
+				<div id="subscribe">Start</div>
 			</div>
 		</div>
-		
-		<div data-role="fieldcontain" style="width:480px;" id="writeInput">
-			<label for="textarea" style="margin-left:15px; float:left; clear:both;">Type:</label>
-			<fieldset data-role="controlgroup" style="margin-left:20px;  float:left; width:480px; clear:both;" data-type="horizontal">
- 				<input type="radio" name="writeType" id="rdo1" value="Hex"ss checked="checked"/>
- 				<label for="rdo1">Hex</label>
- 				<input type="radio" name="writeType" id="rdo2" value="unicode"/>
- 				<label for="rdo2">Unicode</label>
- 				<input type="radio" name="writeType" id="rdo3" value="ASCII"/>
- 				<label for="rdo3">ASCII</label>
-			</fieldset>
-			</br>
-			<label for="textarea" style="margin-left:15px;  float:left; clear:both;">Value:</label>
-			<textarea style="margin-left:20px; width:500px; height:100px; float:left; clear:both;"  name="textarea" id="writeValue"></textarea>
-			<a id="writeOK" href="javascript:void(0)" style="margin-left:20px; width:130px;font-size:16px;float:left; clear:both;" data-role="button" >Write</a>
-			<a id="writeClear" style="margin-right:20px; width:130px;font-size:16px;float:right;" href="javascript:void(0)" data-role="button" >Clear</a>
-		</div>
-		<script>
-			$(function(){
-				app.deviceViewInit();
-			});
+		<script type="text/javascript">
+		$(function(){
+			app.deviceViewInit();
+		});
 		</script>
 	</body>
 </html>
