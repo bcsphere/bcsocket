@@ -17,7 +17,7 @@
  under the License.
  */
 //
-// Prefix header for all source files of the 'bcsocket' target in the 'bcsocket' project
+// Prefix header for all source files of the 'BCSocket' target in the 'BCSocket' project
 //
 
 #ifdef __OBJC__

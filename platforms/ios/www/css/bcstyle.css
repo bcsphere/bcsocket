@@ -1,4 +1,4 @@
-html, body, img,h3,p,h1,ul,li{
+nahtml, body, img,h3,p,h1,ul,li{
 	margin: 0;
 	padding: 0;
 }
@@ -17,7 +17,7 @@ body{
 
 #logo{
 	position:absolute;
-	bottom:60px;
+	bottom:0px;
 }
 #bcbutton{
 	z-index:999;
@@ -177,20 +177,36 @@ p,li{
 	top:0;
 	left:0;
 	width:100%;
-	height:60px;
-	line-height: 60px;
+	height:50px;
+	line-height: 50px;
 	background-color:rgb(229,137,32);
 }
 .header img{
-	float:left;
+    position:absolute;
+    z-index: 999;
+    display:block;
 	padding: 10px 10px;
+	height:45px;
+	top:1.5px;
 }
+
+.imgBack img{
+   position:absolute;
+   z-index: 999;
+   display:block;
+   padding: 10px 0;
+   height:45px;
+   top:1.5px;
+}
+
 .header h1{
+	position: relative;
 	display:block;
+	float:left;
 	width:100%;
 	text-align:center;
 	font-size:1.5em;
-	line-height: 60px;
+	line-height: 50px;
 	color: rgb(255,255,255);
 }
 .desc{
@@ -290,17 +306,7 @@ p,li{
 	border-radius: 6px;
 	border: 1px solid rgb(255,255,255);
 }
-#writeView .writeBtn,#writeView #writeOK,#subscribe,#unsubscribe{
-	display: inline-block;
-	margin: 0 auto;
-	margin-top: 10px;
-	padding:0.5em 1em;
-	border-radius: 6px;
-	border: 1px solid rgb(227,125,30);
-	background: none;
-	color: rgb(255,255,255);
-	font-size:1em;
-}
+
 .btnCenter{
 	text-align: center;
 	margin: 0 auto;
@@ -377,14 +383,20 @@ p,li{
 	height:50px;
 	width:100%;
 	text-align:center;
-	font-size:1.5em;
+	margin-top:0.5em;
 	border: 1px solid rgb(227,125,30);
+	color:rgb(255,255,255);
 	background-color: rgb(227,125,30);
 }
 
+.deviceInfo_bottom #subscribe h3{
+    padding:0.5em 0;
+}
+
+
 #service_view {
 	display:block;
-	margin-top:1em;
+	margin-top:0.5em;
     margin-bottom:55px;
 }
 
@@ -408,13 +420,16 @@ p,li{
 	width:100%;
 	max-height: 20em;
     overflow-y: auto;
-      overflow-x: hidden;
+    overflow-x: hidden;
 }
 
 /*config*/
+.modifyConfig{
+	clear:both;
+}
 .modifyConfig ul{
 	display: block;
-      border: none;
+    border: none;
 }
 .modifyConfig ul li{
 	width: 100%;
@@ -428,14 +443,15 @@ p,li{
 	border-radius: 6px;
 	border: 1px solid rgb(255,255,255);
 	background: none;
-	width:10em;
+	width:8em;
 }
 
 .modifyConfig ul li h4{
 	display: inline-block;
 	float:left;
 	width:55%;
-      color:rgb(255,255,255);
+	padding-top:0.5em;
+    color:rgb(255,255,255);
 }
 
 .infomation{
@@ -450,10 +466,13 @@ p,li{
 }
 
 .header #configOK{
-	float: right;
+	position: absolute;
+	display: inline-block;
+	right:0px;
 	margin-right: 5px;
-	width:90px;
-	height:60px;
+	width:80px;
+	top:-4px;
+	height:55px;
 }
 
 #socket_cont #socket_model{
@@ -465,20 +484,20 @@ p,li{
 /*socketDataView*/
 
 #socketData{
-	
+	margin-top:120px;
 }
 
 #socketDataList{
-	margin-top:120px;
-	margin-bottom:65px;
-    background:none;
+	/*margin-top:120px;
+	margin-bottom:110px;
+    background:none;*/
 }
 
 .navigation{
 	position: fixed;
 	width: 100%;
-	height: 50px;
-	margin-top:60px;
+	height: 60px;
+	margin-top:50px;
 	text-align: center;
 	background-color:rgb(229,137,32);
 }
@@ -506,11 +525,11 @@ p,li{
 }
 
 #writeInput{
-	position: fixed;
-	bottom: 0.4em;
+	position: absolute;
+	bottom: 0;
 	left:0px;
 	width: 100%;
-	height: 40px;
+	height: 50px;
 	background:none;
 	text-align: center;
 }
@@ -518,15 +537,18 @@ p,li{
 #writeInput #writeValue{
 	display: inline-block;
 	border-radius: 6px;
-	width:68%;
-    margin:0;
+	width:70%;
+      margin:0;
+      height:45px;
+      max-height:45px;
 	border: 1px solid rgb(255,255,255);
 }
 
 #writeInput #writeOK{
 	width:80px;
+	height:45px;
 	text-align: center;
-	padding:0.4em 0;
+	padding:0.6em 0;
 	border-radius: 6px;
 	display: inline-block;
 	color:rgb(255,255,255);;
@@ -539,9 +561,14 @@ p,li{
     float:left;
 }
 
+#socketList_tpl span{
+    word-warp:break-word;
+    word-break:break-all;
+}
+
 #socketList_tpl{
     clear:both;
-	margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 /*createSocket*/

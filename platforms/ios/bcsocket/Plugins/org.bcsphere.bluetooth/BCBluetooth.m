@@ -520,7 +520,6 @@
                 NSString *characteristicIndex = [self parseStringFromJS:command.arguments keyFromJS:CHARACTERISTIC_INDEX];
                 NSString *serviceIndex = [self parseStringFromJS:command.arguments keyFromJS:SERVICE_INDEX];
                 NSData *data = [NSData dataFromBase64String:valueWrite];
-                NSLog(@"%@",data);
                 if (data) {
                     if ([self isNormalString:serviceIndex]){
                         if (peripheral.services.count > [serviceIndex intValue]) {
@@ -933,7 +932,7 @@
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didAddService:(CBService *)service error:(NSError *)error{
     if (!error) {
         if (isEndOfAddService) {
-            [myPeripheralManager startAdvertising:@{ CBAdvertisementDataLocalNameKey : @"bcsocket", CBAdvertisementDataServiceUUIDsKey:@[[CBUUID UUIDWithString:@"0000ffe0-0000-1000-8000-00805f9b34fb"]]}];
+            [myPeripheralManager startAdvertising:@{ CBAdvertisementDataLocalNameKey : @"bcsocket", CBAdvertisementDataServiceUUIDsKey:@[[CBUUID UUIDWithString:@"0000ffa0-0000-1000-8000-00805f9b34fb"]]}];
             CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
             [self.commandDelegate sendPluginResult:result callbackId:[[NSUserDefaults standardUserDefaults] objectForKey:ADDSERVICE]];
         }
@@ -1921,6 +1920,8 @@
         case 0x2A6F: return @"CGM Session Start Time Characteristic"; break;
         case 0x2A70: return @"Application Security Point Characteristic"; break;
         case 0x2A71: return @"CGM Specific Ops Control Point Characteristic"; break;
+        case 0xFFA0: return @"BCSocket Service"; break;
+        case 0xFFA1: return @"BCSocket Characteristic"; break;
         default:
             return @"Custom Profile";
             break;

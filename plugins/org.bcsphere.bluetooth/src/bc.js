@@ -764,6 +764,7 @@
 	 * @param {array} [uuids] - Array of services to look for. If null or [], it will scan all devices
 	 */
 	var StartScan = BC.Bluetooth.StartScan = function(uuids){
+        BC.bluetooth.devices = {};
 		BC.bluetooth.startScan(onGetDevicesSuccess,uuids);
 	};
 	
@@ -864,10 +865,12 @@
 				//update the RSSI
 				BC.bluetooth.devices[deviceAddress].RSSI = RSSI;
 			}
+ 
 		}
 	};
 	function isNewDevice(deviceAddress){
 		var res = true;
+// alert(JSON.stringify(BC.bluetooth.devices));
 		_.each(BC.bluetooth.devices,function(device){
 			if(device.deviceAddress == deviceAddress){
 				res = false;
@@ -902,6 +905,7 @@
 	 * @example BC.Bluetooth.StopScan();
 	 */
 	var StopScan = BC.Bluetooth.StopScan = function(){
+        BC.bluetooth.devices = null;
 		BC.bluetooth.stopScan();
 	};
 	
@@ -1137,6 +1141,7 @@
 				}else{
 					result+= dv.getUint8(i).toString(16);
 				}
+             result+= " ";
 			}
 			return result;
 		},

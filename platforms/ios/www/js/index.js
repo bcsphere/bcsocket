@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var serviceUUID = "ffe0";
-var characteristicUUID = "ffe1";
+var serviceUUID = "ffa0";
+var characteristicUUID = "ffa1";
 var serviceUniqueID = "";
 var services= [];
 var ifCreateService = false;
@@ -29,7 +29,7 @@ var characterClient = "";
 var characterServer = "";
 var viewObj = "";
 var interval_scan = "";
-var socketList = [{'name':"TI",'serviceuuid':"fff0",'characteristicuuid':"fff1"},{'name':"BC",'serviceuuid':"ffe0",'characteristicuuid':"ffe1"},{'name':"QUINTIC",'serviceuuid':"ffb0",'characteristicuuid':"ffb1"}];
+var socketList = [{'name':"TI",'serviceuuid':"fff0",'characteristicuuid':"fff1"},{'name':"BC",'serviceuuid':"ffa0",'characteristicuuid':"ffa1"},{'name':"QUINTIC",'serviceuuid':"ffb0",'characteristicuuid':"ffb1"}];
 var app = {
         // Application Constructor
     initialize: function() {
@@ -86,24 +86,7 @@ var app = {
         }
     },
     
-    clickToStop:function(){
-        $('img#spinner').attr("src","img/arrow.png").removeClass('spinner').next().hide();
-        $('img#spinner').attr("onclick","app.clickToScan()");
-        BC.Bluetooth.StopScan();
-        window.clearInterval(interval_scan);
-        repeatScan = false;
-    },
-    
-    clickToScan:function(){
-        viewObj.empty();
-        $('img#spinner').attr("src","img/searching.png").addClass('img-responsive spinner').next().show();
-        $('img#spinner').attr("onclick","app.clickToStop()");
-        app.addScanData();
-        app.scanRepeat();
-    },
-    
     addStartDevice : function(){
-        $('img#spinner').attr("onclick","app.clickToStop()");
         if(repeatScan){
             window.clearInterval(interval_scan);
             repeatScan = false;
@@ -117,11 +100,11 @@ var app = {
         BC.Bluetooth.StartScan();
         BC.Bluetooth.GetConnectedDevices(function(dddd){
                                          _.each(dddd,function(org){
-                                                if(org){
-                                                var adevice = new BC.Device(org.deviceName,org.deviceAddress,org.advertisementData,org.isConnected,org.RSSI);
-                                                BC.bluetooth.devices[adevice.deviceAddress] = adevice;
-                                                app.addNewDevice(adevice);
-                                                }
+                                                    if(org){
+                                                        var adevice = new BC.Device(org.deviceName,org.deviceAddress,org.advertisementData,org.isConnected,org.RSSI);
+                                                        BC.bluetooth.devices[adevice.deviceAddress] = adevice;
+                                                        app.addNewDevice(adevice);
+                                                    }
                                                 })
                                          },[]);
     },
@@ -133,7 +116,6 @@ var app = {
         var newDevice = BC.bluetooth.devices[deviceAddress];
         $(liTplObj).attr("onclick","app.device_page('"+newDevice.deviceAddress+"')");
         liTplObj.show();
-        
         for(var key in newDevice){
             if(key == "isConnected"){
                 if(newDevice.isConnected){
@@ -142,8 +124,17 @@ var app = {
                     $("[dbField='"+key+"']",liTplObj).html("NO");
                 }
             }else{
-                $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
+                if(key == "deviceName"){
+                    if(newDevice.deviceName.length < 2){
+                        $("[dbField='"+key+"']",liTplObj).html("device");
+                    }else{
+                        $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
+                    }
+                }else{
+                    $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
+                }
             }
+            
         }
         viewObj.append(liTplObj);
     },
@@ -154,6 +145,8 @@ var app = {
             $.mobile.changePage("searched.html","slideup");
             app.socketData = [];
             app.outputSocketData = [];
+            app.dataClient = "";
+            characterClient = "";
         }
     },
         
@@ -201,7 +194,7 @@ var app = {
                                     characteristicUUID = $('#configCharacteristic').val().toLowerCase();
                                     window.history.go(-1);
                                  }else{
-                                    alert("config data error!!");
+                                    alert("config data can not be empty");
                                  }
                              });
         
@@ -223,12 +216,15 @@ var app = {
         $("#config").click(function(){
                            $.mobile.changePage("config.html","slideup");
                            })
+        app.subscribeInit();
+        
+    },
+        
+    subscribeInit:function(){
         $("#subscribe").click(function(){
-                              characterClient.isNotifying = true;
                               characterClient.subscribe(function(data){
-                                                            if(data.value.getHexString() == "fedabc"){
+                                                            if(data.value.getHexString() == "fe da bc "){
                                                                 characterClient.unsubscribe(function(){
-                                                                                            characterClient.isNotifying = false;
                                                                                             socketClientState = false;
                                                                                             app.socketData = [];
                                                                                             app.outputSocketData = [];
@@ -238,29 +234,6 @@ var app = {
                                                                 app.dataClient = app.showReceiveData(data.value);
                                                                 app.refreshSocketDataList(false,app.dataClient);
                                                             }
-                                                        });
-                              app.gotobcsocketView();
-                              socketClientState = true;
-                              });
-        
-    },
-        
-    subscribeInit:function(){
-        $("#subscribe").click(function(){
-                              characterClient.isNotifying = true;
-                              characterClient.subscribe(function(data){
-                                                        if(data.value.getHexString() == "fedabc"){
-                                                        characterClient.unsubscribe(function(){
-                                                                                    characterClient.isNotifying = false;
-                                                                                    socketClientState = false;
-                                                                                    app.socketData = [];
-                                                                                    app.outputSocketData = [];
-                                                                                    });
-                                                        $.mobile.changePage("deviceApps.html","slideup");
-                                                        }else{
-                                                        app.dataClient = app.showReceiveData(data.value);
-                                                        app.refreshSocketDataList(false,app.dataClient);
-                                                        }
                                                         });
                               app.gotobcsocketView();
                               socketClientState = true;
@@ -330,7 +303,6 @@ var app = {
     
     pushdeviceAddress: function(service){
         var character = service.getCharacteristicByUUID(characteristicUUID)[0];
-        character.isNotifying = false;
         app.operateCharViewInit(character);
     },
         
@@ -363,12 +335,12 @@ var app = {
     },
     
     createService : function(){
-        var service = BC.Bluetooth.CreateService("ffe0");
+        var service = BC.Bluetooth.CreateService("ffa0");
         var property1 = ["write","notify","read"];
         var permission = ["read","write"];
         var onMyWriteRequestName = "myWriteRequest";
         var onMyReadRequestName = "myReadRequest";
-        var character1 = BC.Bluetooth.CreateCharacteristic("ffe1","6778","Hex",property1,permission);
+        var character1 = BC.Bluetooth.CreateCharacteristic("ffa1","6778","Hex",property1,permission);
         var descriptor1 = BC.Bluetooth.CreateDescriptor("00002901-0000-1000-8000-00805f9b34fb","00","Hex",permission);
         character1.addDescriptor(descriptor1);
         service.addCharacteristic(character1);
@@ -499,7 +471,6 @@ var app = {
             app.createSocket();
         }else if(socketClientState){
             characterClient.unsubscribe(function(){
-                                        characterClient.isNotifying = false;
                                         socketClientState = false;
                                         });
             $.mobile.changePage("deviceApps.html","slideup");
@@ -520,6 +491,7 @@ var app = {
             $("[dbField='avalue']",liTplObj).html(data.avalue.getUnicodeString());
         }
         $("[dbField='adate']",liTplObj).html(data.adate);
+        liTplObj.css({"color":"rgb(255,255,255)"});
         if(inOrOut){
             liTplObj.css({"color":"rgb(227,125,30)"});
             app.outputSocketData.push(data);
@@ -544,6 +516,7 @@ var app = {
                 $("[dbField='avalue']",liTplObj).html(data.avalue.getUnicodeString());
             }
             $("[dbField='adate']",liTplObj).html(data.adate);
+            liTplObj.css({"color":"rgb(255,255,255)"});
             for(var z=0; z<app.outputSocketData.length; z++){
                 var outputData = app.outputSocketData[z];
                 if(data == outputData){

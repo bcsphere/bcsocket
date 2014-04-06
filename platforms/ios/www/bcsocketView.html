@@ -30,23 +30,21 @@
 			<img id="back" src="img/back.png" class="img-responsive" onclick="app.socketStop();">
 			<h1><div id="deviceName">bcsocket</div></h1>
 		</div>
-		<div class="navigation">
-				<div class='selectType' id="HexStyle">Hex</div>
-				<div class='typeBtn' id="UnicodeStyle">Unicode</div>
-				<div class='typeBtn' id="ASCIIStyle">ASCII</div>
-		</div>
-
+        <div class="navigation">
+                <div class='selectType' id="HexStyle">Hex</div>
+                <div class='typeBtn' id="UnicodeStyle">Unicode</div>
+                <div class='typeBtn' id="ASCIIStyle">ASCII</div>
+        </div>
 		<div class="container" id="socketData">
             <div id="socketDataList">
                 <ul  id="socketList_view">
                 	
                 </ul>
-
             </div>
             <div>
 				 <ul  id="socketList_model">
 				     <li id="socketList_tpl" style="display:none">
-				         <p><h5 dbField='adate'>socketdate</h5><h5>:</h5><h5 dbField='avalue'>socketdata</h5><p>
+				         <p><h5><span dbField='adate'>socketdate</span>&nbsp;:&nbsp;<span dbField='avalue'>socketdata</span></h5><p>
 				     </li>
 				 </ul>
             <div>
@@ -57,12 +55,19 @@
 	    </div>
 		<script type="text/javascript">
 		$(function(){
-			$('.navigation div').click(function(){
-				$(this).attr('class','selectType').siblings('div').attr('class','typeBtn');
-                app.refreshList();
-			});
+          var height = $(window).height()-220;
+
+          $('#socketData').css('max-height',height);
+          $('#socketData').css('overflow-y','auto');
+          $('#socketData').css('overflow-x','none');
+
+          
+           $('.navigation div').click(function(){
+            $(this).attr('class','selectType').siblings('div').attr('class','typeBtn');
+            app.refreshList();
+           });
           app.bcsocketViewInit();
-		});
+		}); 
 		</script>
 	</body>
 </html>

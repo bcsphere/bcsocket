@@ -632,6 +632,7 @@
     NSLog(@"Finished load of: %@", theWebView.request.URL);
     UIScrollView* scrollView = self.webView.scrollView;
     scrollView.bounces = NO;
+
     // It's safe to release the lock even if this is just a sub-frame that's finished loading.
     [CDVUserAgentUtil releaseLock:&_userAgentLockToken];
 

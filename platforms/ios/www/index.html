@@ -29,8 +29,14 @@
 			$(function(){
 				width = $(window).width();
 				height = $(window).height();
-				$('#logo').css('left',width*(0.5)-82);
-				$('#bcbutton').css('bottom',height*(0.25));
+              
+				
+              if(width*(0.5) > 320){
+                $('#logo').css('left',width*(0.5)-320);
+              }else{
+               $('#logo').css('left',0);
+              }
+              $('#bcbutton').css('bottom',height*(0.25));
 				setTimeout(function(){
 					$('#logo').css('display','none');
 					$('#bcbutton').fadeIn(3000);
@@ -82,10 +88,10 @@
 				<div id="bcbutton" style="display:none;">
 					<div  id="bcclient" style="float:left;background-color: rgb(227,125,30);width:42%;font-size:0px;">
                         <img style="display:block;margin:0px;border:0px;width:100%;height:100%;" src="img/client.png">
-                            </div>
+                    </div>
 					<div id="bcserver" style="float:right;width:42%;margin-right:11%;font-size:0px;">
                         <img style="display:block;margin:0px;border:0px;width:100%;height:100%;" src="img/service.png">
-                            </div>
+                    </div>
 				</div>
 			</div>
 		</div>
