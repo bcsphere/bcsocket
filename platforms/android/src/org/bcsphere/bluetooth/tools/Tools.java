@@ -102,6 +102,7 @@ public class Tools {
 	public static final String SUCCESS = "success";
 	public static final String ERROR = "error";
 	public static final String MES = "mes";
+	public static final String NEW_ADV_PACKET = "newadvpacket";
 	public static final UUID NOTIFICATION_UUID = UUID
 			.fromString("00002902-0000-1000-8000-00805f9b34fb");
 	public static final UUID GENERIC_ACCESS_UUID = UUID
@@ -412,8 +413,6 @@ public class Tools {
 				"Application Security Point Characteristic");
 		UUIDInstructions.put("00002a71-0000-1000-8000-00805f9b34fb",
 				"CGM Specific Ops Control Point Characteristic");
-		UUIDInstructions.put("0000ffa0-0000-1000-8000-00805f9b34fb","BCSocket Service");
-		UUIDInstructions.put("0000ffa1-0000-1000-8000-00805f9b34fb","BCSocket Characteristic");
 	}
 
 	public static String lookup(int propertySum, int property) {

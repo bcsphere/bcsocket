@@ -17,7 +17,6 @@ cordova.define("org.bcsphere.bluetooth.bluetooth", function(require, exports, mo
 
 var exec = require('cordova/exec');
 var platform = require('cordova/platform');
-var interval_index = null;
 
 /**
  * Provides access to bluetooth on the device.
@@ -27,31 +26,13 @@ var bluetooth = {
 	initialBluetooth: function(){
 
 	},
-	
-	
-    /**
-     * Open a native alert dialog, with a customizable title and button text.
-     *
-     * @param {Function} completeCallback   The callback that is bluetooth stop scan
-     * 
-     */
+
     startScan: function(successFunc,errorFunc,serviceUUIDs) {
         cordova.exec(successFunc,errorFunc, "BCBluetooth", "startScan", serviceUUIDs);
-
     },
-    
-	getScanData: function(getDevicesSuccess,getDevicesError){
-		interval_index = window.setInterval(function() {
-            cordova.exec(getDevicesSuccess,getDevicesError, "BCBluetooth", "getScanData", []);
-        }, 1000);
-	},
 	
     stopScan: function(successFunc,errorFunc){
-   		//alert("stopScan");
     	cordova.exec(successFunc,errorFunc, "BCBluetooth", "stopScan", []);
-    	if(interval_index !== null){
-			window.clearInterval(interval_index);
-		}
     },
     
     connectDevice: function(successFunc,errorFunc,deviceAddress,appID){
@@ -145,21 +126,8 @@ var bluetooth = {
 	addEventListener : function(callback,errorFunc,arg){
 		cordova.exec(callback,errorFunc,"BCBluetooth","addEventListener",[{"eventName":arg.eventName,"arg":arg.arg}]);
 	},
-	
-	startIBeaconScan : function(callback,errorFunc,proximityUUID,major,minor){
-		cordova.exec(callback,errorFunc,"BCBluetooth","startIBeaconScan",[{"proximityUUID":proximityUUID,"major":major,"minor":minor}]);
-	},
-	
-	stopIBeaconScan : function(callback,errorFunc,proximityUUID,major,minor){
-		cordova.exec(callback,errorFunc,"BCBluetooth","stopIBeaconScan",[{"proximityUUID":proximityUUID,"major":major,"minor":minor}]);
-	},
-	
-	startIBeaconAdvertising : function(callback,errorFunc,proximityUUID,major,minor,identifier){
-		cordova.exec(callback,errorFunc,"BCBluetooth","startIBeaconAdvertising",[{"proximityUUID":proximityUUID,"major":major,"minor":minor,"identifier":identifier}]);
-	},
 };
 module.exports = bluetooth;
-
 
 
 });

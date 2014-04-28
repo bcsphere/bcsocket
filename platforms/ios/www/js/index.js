@@ -29,6 +29,8 @@ var characterClient = "";
 var characterServer = "";
 var viewObj = "";
 var interval_scan = "";
+var scan_timestamp = 0;
+
 var socketList = [{'name':"TI",'serviceuuid':"fff0",'characteristicuuid':"fff1"},{'name':"BC",'serviceuuid':"ffa0",'characteristicuuid':"ffa1"},{'name':"QUINTIC",'serviceuuid':"ffb0",'characteristicuuid':"ffb1"}];
 var app = {
         // Application Constructor
@@ -41,13 +43,6 @@ var app = {
         
     bindCordovaEvents: function() {
         document.addEventListener('bcready', app.onBCReady, false);
-        document.addEventListener('deviceconnected', app.onDeviceConnected, false);
-        document.addEventListener('devicedisconnected', app.onBluetoothDisconnect, false);
-        document.addEventListener('newdevice', app.addNewDevice, false);
-        document.addEventListener('bluetoothstatechange', app.onBluetoothStateChange, false);
-        document.addEventListener('onsubscribestatechange', app.onSubscribeStateChange, false);
-        document.addEventListener('oncharacteristicread', app.onCharacteristicRead, false);
-        document.addEventListener('oncharacteristicwrite', app.onCharacteristicWrite, false);
     },
         
     onDeviceConnected : function(arg){
@@ -60,85 +55,159 @@ var app = {
     },
     
     onBCReady: function() {
-        if(!BC.bluetooth.isopen){
-            if(API !== "ios"){
-                BC.Bluetooth.OpenBluetooth(function(){
+        BC.bluetooth.addEventListener("bluetoothstatechange",app.onBluetoothStateChange);
+		BC.bluetooth.addEventListener("newdevice",app.addNewDevice);
+		if(!BC.bluetooth.isopen){
+			if(API !== "ios"){
+				BC.Bluetooth.OpenBluetooth(function(){
+                                           
                                            });
-            }else{
-                alert("Please open your bluetooth first.");
-            }
-        }
+			}else{
+				alert("Please open your bluetooth first.");
+			}
+		}else{
+			//BC.Bluetooth.StartScan();
+		}
+
+
     },
         
-    scanRepeat:function(){
-        repeatScan = true;
-        interval_scan = window.setInterval(function() {
-                                       viewObj.empty();
-                                       app.addScanData();
-                                       }, 50000);
-    },
+//    scanRepeat:function(){
+//        repeatScan = true;
+//        interval_scan = window.setInterval(function() {
+//                                       viewObj.empty();
+//                                       app.addScanData();
+//                                       }, 50000);
+//    },
     
     onBluetoothStateChange : function(){
         if(BC.bluetooth.isopen){
-            alert("bluetooth open!");
-        }else{
-            BC.Bluetooth.OpenBluetooth(function(){alert("opened!");});
-        }
+			alert("your bluetooth has been opened successfully.");
+		}else{
+			alert("bluetooth is closed!");
+			BC.Bluetooth.OpenBluetooth(function(){alert("opened!");});
+		}
     },
+    
+//    addStartDevice : function(){
+//        if(repeatScan){
+//            window.clearInterval(interval_scan);
+//            repeatScan = false;
+//        }
+//        app.addScanData();
+//        app.scanRepeat();
+//    },
+    
+//    addScanData:function(){
+//        BC.Bluetooth.StopScan();
+//        BC.Bluetooth.StartScan();
+//        BC.Bluetooth.GetConnectedDevices(function(dddd){
+//                                         _.each(dddd,function(org){
+//                                                    if(org){
+//                                                        var adevice = new BC.Device(org.deviceName,org.deviceAddress,org.advertisementData,org.isConnected,org.RSSI);
+//                                                        BC.bluetooth.devices[adevice.deviceAddress] = adevice;
+//                                                        app.addNewDevice(adevice);
+//                                                    }
+//                                                })
+//                                         },[]);
+//    },
+    
     
     addStartDevice : function(){
         if(repeatScan){
-            window.clearInterval(interval_scan);
+            BC.Bluetooth.StopScan();
             repeatScan = false;
+            if(interval_scan_index){
+				window.clearInterval(interval_scan_index);
+			}
         }
-        app.addScanData();
-        app.scanRepeat();
-    },
-    
-    addScanData:function(){
-        BC.Bluetooth.StopScan();
         BC.Bluetooth.StartScan();
-        BC.Bluetooth.GetConnectedDevices(function(dddd){
-                                         _.each(dddd,function(org){
-                                                    if(org){
-                                                        var adevice = new BC.Device(org.deviceName,org.deviceAddress,org.advertisementData,org.isConnected,org.RSSI);
-                                                        BC.bluetooth.devices[adevice.deviceAddress] = adevice;
-                                                        app.addNewDevice(adevice);
-                                                    }
-                                                })
-                                         },[]);
+        scan_timestamp = new Date().getTime();
+        interval_scan_index = window.setInterval(app.displayScanResult, 1000);
     },
     
-    addNewDevice: function(arg){
-        var deviceAddress = arg.deviceAddress;
-        viewObj	= $("#user_view");
-        var liTplObj=$("#li_tpl").clone();
-        var newDevice = BC.bluetooth.devices[deviceAddress];
-        $(liTplObj).attr("onclick","app.device_page('"+newDevice.deviceAddress+"')");
-        liTplObj.show();
-        for(var key in newDevice){
-            if(key == "isConnected"){
-                if(newDevice.isConnected){
-                    $("[dbField='"+key+"']",liTplObj).html("YES");
-                }else{
-                    $("[dbField='"+key+"']",liTplObj).html("NO");
-                }
-            }else{
-                if(key == "deviceName"){
-                    if(newDevice.deviceName.length < 2){
-                        $("[dbField='"+key+"']",liTplObj).html("device");
-                    }else{
-                        $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
-                    }
-                }else{
-                    $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
-                }
+    
+    addNewDevice: function(s){
+        repeatScan = true;
+        var newDevice = s.target;
+		newDevice.addEventListener("deviceconnected",app.onDeviceConnected);
+		newDevice.addEventListener("devicedisconnected",app.onDeviceDisconnected);
+		
+//		var viewObj	= $("#user_view");
+//		var liTplObj=$("#li_tpl").clone();
+//        
+//        $(liTplObj).attr("onclick","app.device_page('"+newDevice.deviceAddress+"')");
+//		
+//		liTplObj.show();
+//        for(var key in newDevice){
+//            if(key == "isConnected"){
+//                if(newDevice.isConnected){
+//                    $("[dbField='"+key+"']",liTplObj).html("YES");
+//                }else{
+//                    $("[dbField='"+key+"']",liTplObj).html("NO");
+//                }
+//            }else{
+//                if(key == "deviceName"){
+//                    if(newDevice.deviceName.length < 2){
+//                        $("[dbField='"+key+"']",liTplObj).html("device");
+//                    }else{
+//                        $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
+//                    }
+//                }else{
+//                    $("[dbField='"+key+"']",liTplObj).html(newDevice[key]);
+//                }
+//            }
+//            
+//        }
+//        viewObj.append(liTplObj);
+//        viewObj.listview("refresh");
+
+    },
+    
+    displayScanResult: function(){
+        _.each(BC.bluetooth.devices,function(device){
+               if(scan_timestamp < device.advTimestamp && app.notOnUI(device)){
+                       var viewObj	= $("#user_view");
+                       var liTplObj=$("#li_tpl").clone();
+                       $(liTplObj).attr("onclick","app.device_page('"+device.deviceAddress+"')");
+                       liTplObj.show();
+                       for(var key in device){
+                           if(key == "isConnected"){
+                               if(device.isConnected){
+                                    $("[dbField='"+key+"']",liTplObj).html("YES");
+                               }else{
+                                    $("[dbField='"+key+"']",liTplObj).html("NO");
+                               }
+                           }else{
+                               if(key == "deviceName"){
+                                   if(device.deviceName.length < 2){
+                                        $("[dbField='"+key+"']",liTplObj).html("device");
+                                   }else{
+                                        $("[dbField='"+key+"']",liTplObj).html(device[key]);
+                                   }
+                               }else{
+                                    $("[dbField='"+key+"']",liTplObj).html(device[key]);
+                               }
+                           }
+                       
+                       }
+                       
+                       viewObj.append(liTplObj);
+                       viewObj.listview("refresh");
+                   }
+               });
+    },
+    notOnUI: function(device){
+        var length = $("#user_view li").length;
+        for(var i = 0; i < length; i++){
+            var liTplObj = $("#user_view li")[i];
+            var deviceAddr = $("[dbField='deviceAddress']",liTplObj).html();
+            if(deviceAddr == device.deviceAddress){
+                return false;
             }
-            
         }
-        viewObj.append(liTplObj);
+        return true;
     },
-    
     onBluetoothDisconnect: function(arg){
 //        alert("device:"+arg.deviceAddress+" is disconnected!");
         if(!socketServiceState){
@@ -335,18 +404,23 @@ var app = {
     },
     
     createService : function(){
-        var service = BC.Bluetooth.CreateService("ffa0");
-        var property1 = ["write","notify","read"];
+		var service = new BC.Service({"uuid":"ffa0"});
+        var property = ["write","notify","read"];
         var permission = ["read","write"];
         var onMyWriteRequestName = "myWriteRequest";
         var onMyReadRequestName = "myReadRequest";
-        var character1 = BC.Bluetooth.CreateCharacteristic("ffa1","6778","Hex",property1,permission);
-        var descriptor1 = BC.Bluetooth.CreateDescriptor("00002901-0000-1000-8000-00805f9b34fb","00","Hex",permission);
+		var character1 = new BC.Characteristic({uuid:"ffa1",value:"6778",type:"Hex",property:property,permission:permission});
+		var descriptor1 = new BC.Descriptor({uuid:"2901",value:"00",type:"Hex",permission:permission});
+        descriptor1.addEventListener("ondescriptorread",function(s){alert("ondescriptorread : " + s.uuid);});
+		descriptor1.addEventListener("ondescriptorwrite",function(s){alert("ondescriptorwrite : " + s.uuid);});
         character1.addDescriptor(descriptor1);
         service.addCharacteristic(character1);
-        BC.Bluetooth.AddService(service,app.addServiceSusscess,app.addServiceError);
+		BC.Bluetooth.AddService(service,app.addServiceSusscess,app.addServiceError);
         services[0] = service;
         serviceUniqueID = service.uniqueID;
+        character1.addEventListener("onsubscribestatechange",function(s){alert("onsubscribestatechange : (" + s.uuid + ") state:" + s.isSubscribed);});
+		character1.addEventListener("oncharacteristicread",function(s){alert("oncharacteristicread : (" + s.uuid + ")");});
+		character1.addEventListener("oncharacteristicwrite",function(s){alert("oncharacteristicwrite : (" + s.uuid + ") writeValue:" + s.writeValue.getHexString());});
     },
     
     addServiceSusscess : function(){

@@ -17,7 +17,7 @@
     },
     "installed_plugins": {
         "org.bcsphere.bluetooth": {
-            "PACKAGE_NAME": "org.bcsphere.bcsocket"
+            "PACKAGE_NAME": "com.jumacc.BCJS"
         }
     },
     "dependent_plugins": {}

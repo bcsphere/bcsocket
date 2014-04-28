@@ -61,17 +61,12 @@
 
 @property (strong, nonatomic) NSString *bluetoothState;
 
-@property (nonatomic, strong) CLLocationManager *locationManager;
-@property (nonatomic, strong) CLBeaconRegion *beaconRegion;
-@property NSMutableDictionary *rangedRegions;
-
 - (void)getEnvironment:(CDVInvokedUrlCommand *)command;
 - (void)getBluetoothState:(CDVInvokedUrlCommand*)command;
 - (void)openBluetooth:(CDVInvokedUrlCommand*)command;
 - (void)startScan:(CDVInvokedUrlCommand*)command;
 - (void)stopScan:(CDVInvokedUrlCommand*)command;
 - (void)addEventListener:(CDVInvokedUrlCommand *)command;
-- (void)getScanData:(CDVInvokedUrlCommand*)command;
 - (void)creatPair:(CDVInvokedUrlCommand*)command;
 - (void)removePair:(CDVInvokedUrlCommand*)command;
 - (void)getPairedDevices:(CDVInvokedUrlCommand*)command;
@@ -89,6 +84,4 @@
 - (void)addServices:(CDVInvokedUrlCommand*)command;
 - (void)removeServices:(CDVInvokedUrlCommand*)command;
 
-- (void)startIBeaconScan:(CDVInvokedUrlCommand *)command;
-- (void)stopIBeaconScan:(CDVInvokedUrlCommand *)command;
 @end
